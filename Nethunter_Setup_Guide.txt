@@ -27,7 +27,7 @@ $`mkdir kernel`
 
 $ `cd kernel`
 
-$ `git clone -b lineage-18.1 https://github.com/goldfish07/android_kernel_samsung_j8y18lte.git`
+$ `git clone -b lineage-18.1 https://github.com/Adrilaw/android_kernel_samsung_j8y18lte.git`
 
 $ `cd android_kernel_samsung_j8y18lt`
 
