@@ -52,7 +52,7 @@ Note:First, select S. Setup Environment and download toolchains. and then select
 ### 2. Building the kernel
 #### After downloading toolchains from nethunter and applying patch now lets build our kernel and use it
 
-1. $ `cd Nethunter-j8y18lte-kernel`
+1. $ `cd android_kernel_samsung_j8y18lte`
 
 #### Set Up Environment Variables:--If you install toolchain using nethunter script then it will be in home dir in a folder called toolchain.
 2. 
