@@ -1,1 +1,225 @@
+# Kidpentester-Nethunter-Kernel J8y18LTE (AOSP 11)
+
+A Custom Kernel For Any Samsung Galaxy J8 runing custom android 11 rom
+
+Compiled using Google GCC 4.9 Toolchain
+
+• URL: https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
+
+• XDA J8 Forum:https://xdaforums.com/t/unofficial-kali-nethunter-kernel-for-samsung-j8.4681465/
+
+# How to Use
+## Prerequisites
+
+Before starting, ensure you have the following:
+
+- **Linux-Based OS** (e.g., Ubuntu, Kali Linux) for the build environment.
+- **Required Packages**:
+  ```bash
+  sudo apt-get update
+  sudo apt-get install git build-essential libncurses5-dev zlib1g-dev \
+                       libssl-dev libelf-dev bison flex
+
+### 1. Set Up the Kernel
+#### Note: Only usE nethunter kernel builder for patches and toolchain!! 
+
+$`mkdir kernel`
+
+$ `cd kernel`
+
+$ `git clone -b lineage-18.1 https://github.com/Adrilaw/android_kernel_samsung_j8y18lte.git`
+
+$ `cd android_kernel_samsung_j8y18lte`
+
+$ `git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel`
+
+$ `cd kali-nethunter-kernel`
+
+$ `cp local.config.examples/local.config.allinone local.config`
+
+$ `sudo ./build.sh`
+Note:First, select S. Setup Environment and download toolchains. and then select 
+4. Apply Nethunter kernel (choose kernel 3.18)
+# Select those listed patch for nethuter kernel builder to enable required  nethunter feature.
+ 1) add-cdrom-frozencow-3.18.patch
+ 7) add-HID-km-support-oneplus___msm8996-los_3.18.patch
+ 8) add-mac80211-packet-injection-3.18.patch
+10) add-rtl88xxau-5.6.4.2-drivers-3.18.patch
+13) fix-incompatible-pointer-type-error-in-btusb.c-3.18.patch
+14) fix-rt2800-injection-3.18.patch
+15) fix-rtl8812au-compilation-errors-3.18.patch
+
+### 2. Building the kernel
+#### After downloading toolchains from nethunter and applying patch now lets build our kernel and use it
+
+1. $ `cd android_kernel_samsung_j8y18lte`
+
+#### Set Up Environment Variables:--If you install toolchain using nethunter script then it will be in home dir in a folder called toolchain.
+2. 
+   $ `export CROSS_COMPILE=/path/to/your/toolchain/bin/aarch64-linux-gnu-`
+   
+   $ `export ARCH=arm64`
+   
+    $ `export SUBARCH=arm64`
+
+#### Configure and Compile the Kernel:
+3. $`make j8y18lte_defconfig`
+
+
+   $ `make menuconfig`  ----> this step will allow you to enable nethunter feautres  so follow https://www.kali.org/docs/nethunter/nethunter-kernel-2-config-1/ guide to have your nethunter kernel ready.
+ #### NOTE: skip the kernel usb configuration as patch already did it.
+ 
+ ##### After succesfully configuration then you are ready to compile kernel using next command:
+ $ `make -j$(nproc)`
+
+##### Note:After the successful compilation go to arch/arm64/boot and copy the  'Image.gz-dtb' to anykernel directory !!
+
+### 3.Getting kernel ready to flash 
+
+1. #### Open new terminal
+
+2. ##### Clone AnyKernel3 to make flasable file
+
+$ `git clone https://github.com/osm0sis/AnyKernel3.git`
+
+$ `cd AnyKernel3`
+
+3. ##### Edit anykernel.sh file for a success kernel installation
+  $  `sudo rm -r anykernel.sh` 
+
+  $ `nano anykernel.sh` ------> this will create a new anykernel.sh file paste this in that
+  ```bash
+  ### AnyKernel3 Ramdisk Mod Script
+## osm0sis @ xda-developers
+
+### AnyKernel setup
+# global properties
+properties() { '
+kernel.string=Nethunter kernel for samsung J8 by xda-developers @Kidpentester
+do.devicecheck=1
+do.modules=0
+do.systemless=1
+do.cleanup=1
+do.cleanuponabort=0
+device.name1=j8y18lte
+device.name2=j8y18lte/dd
+device.name3=J810G
+device.name4=J810GF
+device.name5=J810F
+device.name6=J810M
+supported.versions=
+supported.patchlevels=
+supported.vendorpatchlevels=
+'; } # end properties
+
+
+### AnyKernel install
+## boot files attributes
+boot_attributes() {
+set_perm_recursive 0 0 755 644 $RAMDISK/*;
+set_perm_recursive 0 0 750 750 $RAMDISK/init* $RAMDISK/sbin;
+} # end attributes
+
+# boot shell variables
+BLOCK=/dev/block/mmcblk0p25;
+IS_SLOT_DEVICE=0;
+RAMDISK_COMPRESSION=auto;
+PATCH_VBMETA_FLAG=auto;
+
+# import functions/variables and setup patching - see for reference (DO NOT REMOVE)
+. tools/ak3-core.sh;
+
+# boot install
+dump_boot; # use split_boot to skip ramdisk unpack, e.g. for devices with init_boot ramdisk
+
+# init.rc
+backup_file init.rc;
+replace_string init.rc "cpuctl cpu,timer_slack" "mount cgroup none /dev/cpuctl cpu" "mount cgroup none /dev/cpuctl cpu,timer_slack";
+
+# init.tuna.rc
+backup_file init.tuna.rc;
+insert_line init.tuna.rc "nodiratime barrier=0" after "mount_all /fstab.tuna" "\tmount ext4 /dev/block/platform/omap/omap_hsmmc.0/by-name/userdata /data remount nosuid nodev noatime nodiratime barrier=0";
+append_file init.tuna.rc "bootscript" init.tuna;
+
+# fstab.tuna
+backup_file fstab.tuna;
+patch_fstab fstab.tuna /system ext4 options "noatime,barrier=1" "noatime,nodiratime,barrier=0";
+patch_fstab fstab.tuna /cache ext4 options "barrier=1" "barrier=0,nomblk_io_submit";
+patch_fstab fstab.tuna /data ext4 options "data=ordered" "nomblk_io_submit,data=writeback";
+append_file fstab.tuna "usbdisk" fstab;
+
+write_boot; # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
+## end boot install
+
+
+## init_boot files attributes
+#init_boot_attributes() {
+#set_perm_recursive 0 0 755 644 $RAMDISK/*;
+#set_perm_recursive 0 0 750 750 $RAMDISK/init* $RAMDISK/sbin;
+#} # end attributes
+
+# init_boot shell variables
+#BLOCK=init_boot;
+#IS_SLOT_DEVICE=1;
+#RAMDISK_COMPRESSION=auto;
+#PATCH_VBMETA_FLAG=auto;
+
+# reset for init_boot patching
+#reset_ak;
+
+# init_boot install
+#dump_boot; # unpack ramdisk since it is the new first stage init ramdisk where overlay.d must go
+
+#write_boot;
+## end init_boot install
+
+
+## vendor_kernel_boot shell variables
+#BLOCK=vendor_kernel_boot;
+#IS_SLOT_DEVICE=1;
+#RAMDISK_COMPRESSION=auto;
+#PATCH_VBMETA_FLAG=auto;
+
+# reset for vendor_kernel_boot patching
+#reset_ak;
+
+# vendor_kernel_boot install
+#split_boot; # skip unpack/repack ramdisk, e.g. for dtb on devices with hdr v4 and vendor_kernel_boot
+
+#flash_boot;
+## end vendor_kernel_boot install
+
+
+## vendor_boot files attributes
+#vendor_boot_attributes() {
+#set_perm_recursive 0 0 755 644 $RAMDISK/*;
+#set_perm_recursive 0 0 750 750 $RAMDISK/init* $RAMDISK/sbin;
+#} # end attributes
+
+# vendor_boot shell variables
+#BLOCK=vendor_boot;
+#IS_SLOT_DEVICE=1;
+#RAMDISK_COMPRESSION=auto;
+#PATCH_VBMETA_FLAG=auto;
+
+# reset for vendor_boot patching
+#reset_ak;
+
+# vendor_boot install
+#dump_boot; # use split_boot to skip ramdisk unpack, e.g. for dtb on devices with hdr v4 but no vendor_kernel_boot
+
+#write_boot; # use flash_boot to skip ramdisk repack, e.g. for dtb on devices with hdr v4 but no vendor_kernel_boot
+## end vendor_boot install
+`````
+4. ##### In anykernel dir use this command to make the flashable kernel file
+
+• Note the flasable kernel file will be generated in your home directory
+
+$ `zip -r9 ../Nethunter-SMJ8.zip . -x ".git/*"`
+
+5. ##### Flash the file
+After zip was created as Nethunter-SMJ8.zip flash it to your device using twrp and etc... and it should be working
+
+# License 
+This project is licensed under the Linux Torvalds [`LICENSE`](LICENSE).
 
