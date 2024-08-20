@@ -15,7 +15,6 @@ Before starting, ensure you have the following:
 
 - **Linux-Based OS** (e.g., Ubuntu, Kali Linux) for the build environment.
 - **Required Packages**:
-  ```bash
   sudo apt-get update
   sudo apt-get install git build-essential libncurses5-dev zlib1g-dev \
                        libssl-dev libelf-dev bison flex
@@ -88,7 +87,7 @@ $ `cd AnyKernel3`
   $  `sudo rm -r anykernel.sh` 
 
   $ `nano anykernel.sh` ------> this will create a new anykernel.sh file paste this in that
-  ```bash
+  `
   ### AnyKernel3 Ramdisk Mod Script
 ## osm0sis @ xda-developers
 
@@ -210,7 +209,7 @@ write_boot; # use flash_boot to skip ramdisk repack, e.g. for devices with init_
 
 #write_boot; # use flash_boot to skip ramdisk repack, e.g. for dtb on devices with hdr v4 but no vendor_kernel_boot
 ## end vendor_boot install
-`````
+
 4. ##### In anykernel dir use this command to make the flashable kernel file
 
 • Note the flasable kernel file will be generated in your home directory
