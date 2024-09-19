@@ -1,4 +1,4 @@
-# Kidpentester-Nethunter-Kernel J8y18LTE (AOSP 11)
+# Kidpentester-Nethunter-Kernel J8y18LTE (AOSP 12)
 
 A Custom Kernel For Any Samsung Galaxy J8 runing custom android 11 rom
 
