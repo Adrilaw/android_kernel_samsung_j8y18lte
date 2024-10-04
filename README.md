@@ -11,14 +11,20 @@ sudo apt update
 ```
 ```bash
 sudo apt install -y build-essential
+```
 ```bash
 sudo apt install -y git
+```
 ```bash
 sudo apt install -y make
+```
 ```bash
 sudo apt install -y zip
+```
 ```bash
 sudo apt install -y patch
+```
 ```bash
 sudo apt install -y bc bison flex libssl-dev libncurses5-dev libelf-dev
+```
 
