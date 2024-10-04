@@ -8,22 +8,16 @@
 You can install the required packages using the following commands:
 ```bash
 sudo apt update
-
-
+```bash
 sudo apt install -y build-essential
-
-
+```bash
 sudo apt install -y git
-
-
+```bash
 sudo apt install -y make
-
-
+```bash
 sudo apt install -y zip
-
-# Install patch
+```bash
 sudo apt install -y patch
-
-# Install additional packages (optional but recommended)
+```bash
 sudo apt install -y bc bison flex libssl-dev libncurses5-dev libelf-dev
 
