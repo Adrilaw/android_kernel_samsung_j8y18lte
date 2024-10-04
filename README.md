@@ -6,8 +6,8 @@
 
 **Install Required Packages**
 You can install the required packages using the following commands:
-
-`sudo apt update`
+```bash
+sudo apt update
 
 
 sudo apt install -y build-essential
