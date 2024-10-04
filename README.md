@@ -6,24 +6,24 @@
 
 **Install Required Packages**
 You can install the required packages using the following commands:
-bash ```
-# Update package list
-sudo apt update
 
-# Install git
+`sudo apt update`
+
+
+sudo apt install -y build-essential
+
+
 sudo apt install -y git
 
-# Install make
+
 sudo apt install -y make
 
-# Install GCC (GNU Compiler Collection)
-sudo apt install -y gcc
 
-# Install G++ (GNU C++ Compiler)
-sudo apt install -y g++
-
-# Install zip
 sudo apt install -y zip
 
 # Install patch
 sudo apt install -y patch
+
+# Install additional packages (optional but recommended)
+sudo apt install -y bc bison flex libssl-dev libncurses5-dev libelf-dev
+
