@@ -1,223 +1,412 @@
-# Kidpentester-Nethunter-Kernel J8y18LTE (AOSP 11)
+        Linux kernel release 3.x <http://kernel.org/>
 
-A Custom Kernel For Any Samsung Galaxy J8 runing custom android 11 rom
+These are the release notes for Linux version 3.  Read them carefully,
+as they tell you what this is all about, explain how to install the
+kernel, and what to do if something goes wrong. 
 
-Compiled using Google GCC 4.9 Toolchain
+WHAT IS LINUX?
 
-• URL: https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
+  Linux is a clone of the operating system Unix, written from scratch by
+  Linus Torvalds with assistance from a loosely-knit team of hackers across
+  the Net. It aims towards POSIX and Single UNIX Specification compliance.
 
-• XDA J8 Forum:https://xdaforums.com/t/unofficial-kali-nethunter-kernel-for-samsung-j8.4681465/
+  It has all the features you would expect in a modern fully-fledged Unix,
+  including true multitasking, virtual memory, shared libraries, demand
+  loading, shared copy-on-write executables, proper memory management,
+  and multistack networking including IPv4 and IPv6.
 
-# How to Use
-## Prerequisites
+  It is distributed under the GNU General Public License - see the
+  accompanying COPYING file for more details. 
 
-Before starting, ensure you have the following:
+ON WHAT HARDWARE DOES IT RUN?
 
-- **Linux-Based OS** (e.g., Ubuntu, Kali Linux) for the build environment.
-- **Required Packages**:
-  sudo apt-get update
-  sudo apt-get install git build-essential libncurses5-dev zlib1g-dev \
-                       libssl-dev libelf-dev bison flex
+  Although originally developed first for 32-bit x86-based PCs (386 or higher),
+  today Linux also runs on (at least) the Compaq Alpha AXP, Sun SPARC and
+  UltraSPARC, Motorola 68000, PowerPC, PowerPC64, ARM, Hitachi SuperH, Cell,
+  IBM S/390, MIPS, HP PA-RISC, Intel IA-64, DEC VAX, AMD x86-64, AXIS CRIS,
+  Xtensa, Tilera TILE, AVR32 and Renesas M32R architectures.
 
-### 1. Set Up the Kernel
-#### Note: Only usE nethunter kernel builder for patches and toolchain!! 
+  Linux is easily portable to most general-purpose 32- or 64-bit architectures
+  as long as they have a paged memory management unit (PMMU) and a port of the
+  GNU C compiler (gcc) (part of The GNU Compiler Collection, GCC). Linux has
+  also been ported to a number of architectures without a PMMU, although
+  functionality is then obviously somewhat limited.
+  Linux has also been ported to itself. You can now run the kernel as a
+  userspace application - this is called UserMode Linux (UML).
 
-$`mkdir kernel`
+DOCUMENTATION:
 
-$ `cd kernel`
+ - There is a lot of documentation available both in electronic form on
+   the Internet and in books, both Linux-specific and pertaining to
+   general UNIX questions.  I'd recommend looking into the documentation
+   subdirectories on any Linux FTP site for the LDP (Linux Documentation
+   Project) books.  This README is not meant to be documentation on the
+   system: there are much better sources available.
 
-$ `git clone -b lineage-18.1 https://github.com/Adrilaw/android_kernel_samsung_j8y18lte.git`
+ - There are various README files in the Documentation/ subdirectory:
+   these typically contain kernel-specific installation notes for some 
+   drivers for example. See Documentation/00-INDEX for a list of what
+   is contained in each file.  Please read the Changes file, as it
+   contains information about the problems, which may result by upgrading
+   your kernel.
 
-$ `cd android_kernel_samsung_j8y18lte`
+ - The Documentation/DocBook/ subdirectory contains several guides for
+   kernel developers and users.  These guides can be rendered in a
+   number of formats:  PostScript (.ps), PDF, HTML, & man-pages, among others.
+   After installation, "make psdocs", "make pdfdocs", "make htmldocs",
+   or "make mandocs" will render the documentation in the requested format.
 
-$ `git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel`
+INSTALLING the kernel source:
 
-$ `cd kali-nethunter-kernel`
+ - If you install the full sources, put the kernel tarball in a
+   directory where you have permissions (eg. your home directory) and
+   unpack it:
 
-$ `cp local.config.examples/local.config.allinone local.config`
+     gzip -cd linux-3.X.tar.gz | tar xvf -
 
-$ `sudo ./build.sh`
-Note:First, select S. Setup Environment and download toolchains. and then select 
-4. Apply Nethunter kernel (choose kernel 3.18)
-# Select those listed patch for nethuter kernel builder to enable required  nethunter feature.
- 1) add-cdrom-frozencow-3.18.patch
- 7) add-HID-km-support-oneplus___msm8996-los_3.18.patch
- 8) add-mac80211-packet-injection-3.18.patch
-10) add-rtl88xxau-5.6.4.2-drivers-3.18.patch
-13) fix-incompatible-pointer-type-error-in-btusb.c-3.18.patch
-14) fix-rt2800-injection-3.18.patch
-15) fix-rtl8812au-compilation-errors-3.18.patch
+   or
 
-### 2. Building the kernel
-#### After downloading toolchains from nethunter and applying patch now lets build our kernel and use it
+     bzip2 -dc linux-3.X.tar.bz2 | tar xvf -
 
-1. $ `cd android_kernel_samsung_j8y18lte`
+   Replace "X" with the version number of the latest kernel.
 
-#### Set Up Environment Variables:--If you install toolchain using nethunter script then it will be in home dir in a folder called toolchain.
-2. 
-   $ `export CROSS_COMPILE=/path/to/your/toolchain/bin/aarch64-linux-gnu-`
-   
-   $ `export ARCH=arm64`
-   
-    $ `export SUBARCH=arm64`
+   Do NOT use the /usr/src/linux area! This area has a (usually
+   incomplete) set of kernel headers that are used by the library header
+   files.  They should match the library, and not get messed up by
+   whatever the kernel-du-jour happens to be.
 
-#### Configure and Compile the Kernel:
-3. $`make j8y18lte_defconfig`
+ - You can also upgrade between 3.x releases by patching.  Patches are
+   distributed in the traditional gzip and the newer bzip2 format.  To
+   install by patching, get all the newer patch files, enter the
+   top level directory of the kernel source (linux-3.X) and execute:
 
+     gzip -cd ../patch-3.x.gz | patch -p1
 
-   $ `make menuconfig`  ----> this step will allow you to enable nethunter feautres  so follow https://www.kali.org/docs/nethunter/nethunter-kernel-2-config-1/ guide to have your nethunter kernel ready.
- #### NOTE: skip the kernel usb configuration as patch already did it.
- 
- ##### After succesfully configuration then you are ready to compile kernel using next command:
- $ `make -j$(nproc)`
+   or
 
-##### Note:After the successful compilation go to arch/arm64/boot and copy the  'Image.gz-dtb' to anykernel directory !!
+     bzip2 -dc ../patch-3.x.bz2 | patch -p1
 
-### 3.Getting kernel ready to flash 
+   Replace "x" for all versions bigger than the version "X" of your current
+   source tree, _in_order_, and you should be ok.  You may want to remove
+   the backup files (some-file-name~ or some-file-name.orig), and make sure
+   that there are no failed patches (some-file-name# or some-file-name.rej).
+   If there are, either you or I have made a mistake.
 
-1. #### Open new terminal
+   Unlike patches for the 3.x kernels, patches for the 3.x.y kernels
+   (also known as the -stable kernels) are not incremental but instead apply
+   directly to the base 3.x kernel.  For example, if your base kernel is 3.0
+   and you want to apply the 3.0.3 patch, you must not first apply the 3.0.1
+   and 3.0.2 patches. Similarly, if you are running kernel version 3.0.2 and
+   want to jump to 3.0.3, you must first reverse the 3.0.2 patch (that is,
+   patch -R) _before_ applying the 3.0.3 patch. You can read more on this in
+   Documentation/applying-patches.txt
 
-2. ##### Clone AnyKernel3 to make flasable file
+   Alternatively, the script patch-kernel can be used to automate this
+   process.  It determines the current kernel version and applies any
+   patches found.
 
-$ `git clone https://github.com/osm0sis/AnyKernel3.git`
+     linux/scripts/patch-kernel linux
 
-$ `cd AnyKernel3`
+   The first argument in the command above is the location of the
+   kernel source.  Patches are applied from the current directory, but
+   an alternative directory can be specified as the second argument.
 
-3. ##### Edit anykernel.sh file for a success kernel installation
-  $  `sudo rm -r anykernel.sh` 
+ - Make sure you have no stale .o files and dependencies lying around:
 
-  $ `nano anykernel.sh` ------> this will create a new anykernel.sh file paste this in that
-  `
-  ### AnyKernel3 Ramdisk Mod Script
-## osm0sis @ xda-developers
+     cd linux
+     make mrproper
 
-### AnyKernel setup
-# global properties
-properties() { '
-kernel.string=Nethunter kernel for samsung J8 by xda-developers @Kidpentester
-do.devicecheck=1
-do.modules=0
-do.systemless=1
-do.cleanup=1
-do.cleanuponabort=0
-device.name1=j8y18lte
-device.name2=j8y18lte/dd
-device.name3=J810G
-device.name4=J810GF
-device.name5=J810F
-device.name6=J810M
-supported.versions=
-supported.patchlevels=
-supported.vendorpatchlevels=
-'; } # end properties
+   You should now have the sources correctly installed.
 
+SOFTWARE REQUIREMENTS
 
-### AnyKernel install
-## boot files attributes
-boot_attributes() {
-set_perm_recursive 0 0 755 644 $RAMDISK/*;
-set_perm_recursive 0 0 750 750 $RAMDISK/init* $RAMDISK/sbin;
-} # end attributes
+   Compiling and running the 3.x kernels requires up-to-date
+   versions of various software packages.  Consult
+   Documentation/Changes for the minimum version numbers required
+   and how to get updates for these packages.  Beware that using
+   excessively old versions of these packages can cause indirect
+   errors that are very difficult to track down, so don't assume that
+   you can just update packages when obvious problems arise during
+   build or operation.
 
-# boot shell variables
-BLOCK=/dev/block/mmcblk0p25;
-IS_SLOT_DEVICE=0;
-RAMDISK_COMPRESSION=auto;
-PATCH_VBMETA_FLAG=auto;
+BUILD directory for the kernel:
 
-# import functions/variables and setup patching - see for reference (DO NOT REMOVE)
-. tools/ak3-core.sh;
+   When compiling the kernel, all output files will per default be
+   stored together with the kernel source code.
+   Using the option "make O=output/dir" allow you to specify an alternate
+   place for the output files (including .config).
+   Example:
 
-# boot install
-dump_boot; # use split_boot to skip ramdisk unpack, e.g. for devices with init_boot ramdisk
+     kernel source code: /usr/src/linux-3.X
+     build directory:    /home/name/build/kernel
 
-# init.rc
-backup_file init.rc;
-replace_string init.rc "cpuctl cpu,timer_slack" "mount cgroup none /dev/cpuctl cpu" "mount cgroup none /dev/cpuctl cpu,timer_slack";
+   To configure and build the kernel, use:
 
-# init.tuna.rc
-backup_file init.tuna.rc;
-insert_line init.tuna.rc "nodiratime barrier=0" after "mount_all /fstab.tuna" "\tmount ext4 /dev/block/platform/omap/omap_hsmmc.0/by-name/userdata /data remount nosuid nodev noatime nodiratime barrier=0";
-append_file init.tuna.rc "bootscript" init.tuna;
+     cd /usr/src/linux-3.X
+     make O=/home/name/build/kernel menuconfig
+     make O=/home/name/build/kernel
+     sudo make O=/home/name/build/kernel modules_install install
 
-# fstab.tuna
-backup_file fstab.tuna;
-patch_fstab fstab.tuna /system ext4 options "noatime,barrier=1" "noatime,nodiratime,barrier=0";
-patch_fstab fstab.tuna /cache ext4 options "barrier=1" "barrier=0,nomblk_io_submit";
-patch_fstab fstab.tuna /data ext4 options "data=ordered" "nomblk_io_submit,data=writeback";
-append_file fstab.tuna "usbdisk" fstab;
+   Please note: If the 'O=output/dir' option is used, then it must be
+   used for all invocations of make.
 
-write_boot; # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
-## end boot install
+CONFIGURING the kernel:
 
+   Do not skip this step even if you are only upgrading one minor
+   version.  New configuration options are added in each release, and
+   odd problems will turn up if the configuration files are not set up
+   as expected.  If you want to carry your existing configuration to a
+   new version with minimal work, use "make oldconfig", which will
+   only ask you for the answers to new questions.
 
-## init_boot files attributes
-#init_boot_attributes() {
-#set_perm_recursive 0 0 755 644 $RAMDISK/*;
-#set_perm_recursive 0 0 750 750 $RAMDISK/init* $RAMDISK/sbin;
-#} # end attributes
+ - Alternative configuration commands are:
 
-# init_boot shell variables
-#BLOCK=init_boot;
-#IS_SLOT_DEVICE=1;
-#RAMDISK_COMPRESSION=auto;
-#PATCH_VBMETA_FLAG=auto;
+     "make config"      Plain text interface.
 
-# reset for init_boot patching
-#reset_ak;
+     "make menuconfig"  Text based color menus, radiolists & dialogs.
 
-# init_boot install
-#dump_boot; # unpack ramdisk since it is the new first stage init ramdisk where overlay.d must go
+     "make nconfig"     Enhanced text based color menus.
 
-#write_boot;
-## end init_boot install
+     "make xconfig"     X windows (Qt) based configuration tool.
 
+     "make gconfig"     X windows (Gtk) based configuration tool.
 
-## vendor_kernel_boot shell variables
-#BLOCK=vendor_kernel_boot;
-#IS_SLOT_DEVICE=1;
-#RAMDISK_COMPRESSION=auto;
-#PATCH_VBMETA_FLAG=auto;
+     "make oldconfig"   Default all questions based on the contents of
+                        your existing ./.config file and asking about
+                        new config symbols.
 
-# reset for vendor_kernel_boot patching
-#reset_ak;
+     "make silentoldconfig"
+                        Like above, but avoids cluttering the screen
+                        with questions already answered.
+                        Additionally updates the dependencies.
 
-# vendor_kernel_boot install
-#split_boot; # skip unpack/repack ramdisk, e.g. for dtb on devices with hdr v4 and vendor_kernel_boot
+     "make olddefconfig"
+                        Like above, but sets new symbols to their default
+                        values without prompting.
 
-#flash_boot;
-## end vendor_kernel_boot install
+     "make defconfig"   Create a ./.config file by using the default
+                        symbol values from either arch/$ARCH/defconfig
+                        or arch/$ARCH/configs/${PLATFORM}_defconfig,
+                        depending on the architecture.
 
+     "make ${PLATFORM}_defconfig"
+                        Create a ./.config file by using the default
+                        symbol values from
+                        arch/$ARCH/configs/${PLATFORM}_defconfig.
+                        Use "make help" to get a list of all available
+                        platforms of your architecture.
 
-## vendor_boot files attributes
-#vendor_boot_attributes() {
-#set_perm_recursive 0 0 755 644 $RAMDISK/*;
-#set_perm_recursive 0 0 750 750 $RAMDISK/init* $RAMDISK/sbin;
-#} # end attributes
+     "make allyesconfig"
+                        Create a ./.config file by setting symbol
+                        values to 'y' as much as possible.
 
-# vendor_boot shell variables
-#BLOCK=vendor_boot;
-#IS_SLOT_DEVICE=1;
-#RAMDISK_COMPRESSION=auto;
-#PATCH_VBMETA_FLAG=auto;
+     "make allmodconfig"
+                        Create a ./.config file by setting symbol
+                        values to 'm' as much as possible.
 
-# reset for vendor_boot patching
-#reset_ak;
+     "make allnoconfig" Create a ./.config file by setting symbol
+                        values to 'n' as much as possible.
 
-# vendor_boot install
-#dump_boot; # use split_boot to skip ramdisk unpack, e.g. for dtb on devices with hdr v4 but no vendor_kernel_boot
+     "make randconfig"  Create a ./.config file by setting symbol
+                        values to random values.
 
-#write_boot; # use flash_boot to skip ramdisk repack, e.g. for dtb on devices with hdr v4 but no vendor_kernel_boot
-## end vendor_boot install
+     "make localmodconfig" Create a config based on current config and
+                           loaded modules (lsmod). Disables any module
+                           option that is not needed for the loaded modules.
 
-4. ##### In anykernel dir use this command to make the flashable kernel file
+                           To create a localmodconfig for another machine,
+                           store the lsmod of that machine into a file
+                           and pass it in as a LSMOD parameter.
 
-• Note the flasable kernel file will be generated in your home directory
+                   target$ lsmod > /tmp/mylsmod
+                   target$ scp /tmp/mylsmod host:/tmp
 
-$ `zip -r9 ../Nethunter-SMJ8.zip . -x ".git/*"`
+                   host$ make LSMOD=/tmp/mylsmod localmodconfig
 
-5. ##### Flash the file
-After zip was created as Nethunter-SMJ8.zip flash it to your device using twrp and etc... and it should be working
+                           The above also works when cross compiling.
 
-# License 
-This project is licensed under the Linux Torvalds [`LICENSE`](LICENSE).
+     "make localyesconfig" Similar to localmodconfig, except it will convert
+                           all module options to built in (=y) options.
+
+   You can find more information on using the Linux kernel config tools
+   in Documentation/kbuild/kconfig.txt.
+
+ - NOTES on "make config":
+
+    - Having unnecessary drivers will make the kernel bigger, and can
+      under some circumstances lead to problems: probing for a
+      nonexistent controller card may confuse your other controllers
+
+    - Compiling the kernel with "Processor type" set higher than 386
+      will result in a kernel that does NOT work on a 386.  The
+      kernel will detect this on bootup, and give up.
+
+    - A kernel with math-emulation compiled in will still use the
+      coprocessor if one is present: the math emulation will just
+      never get used in that case.  The kernel will be slightly larger,
+      but will work on different machines regardless of whether they
+      have a math coprocessor or not.
+
+    - The "kernel hacking" configuration details usually result in a
+      bigger or slower kernel (or both), and can even make the kernel
+      less stable by configuring some routines to actively try to
+      break bad code to find kernel problems (kmalloc()).  Thus you
+      should probably answer 'n' to the questions for "development",
+      "experimental", or "debugging" features.
+
+COMPILING the kernel:
+
+ - Make sure you have at least gcc 3.2 available.
+   For more information, refer to Documentation/Changes.
+
+   Please note that you can still run a.out user programs with this kernel.
+
+ - Do a "make" to create a compressed kernel image. It is also
+   possible to do "make install" if you have lilo installed to suit the
+   kernel makefiles, but you may want to check your particular lilo setup first.
+
+   To do the actual install, you have to be root, but none of the normal
+   build should require that. Don't take the name of root in vain.
+
+ - If you configured any of the parts of the kernel as `modules', you
+   will also have to do "make modules_install".
+
+ - Verbose kernel compile/build output:
+
+   Normally, the kernel build system runs in a fairly quiet mode (but not
+   totally silent).  However, sometimes you or other kernel developers need
+   to see compile, link, or other commands exactly as they are executed.
+   For this, use "verbose" build mode.  This is done by inserting
+   "V=1" in the "make" command.  E.g.:
+
+     make V=1 all
+
+   To have the build system also tell the reason for the rebuild of each
+   target, use "V=2".  The default is "V=0".
+
+ - Keep a backup kernel handy in case something goes wrong.  This is 
+   especially true for the development releases, since each new release
+   contains new code which has not been debugged.  Make sure you keep a
+   backup of the modules corresponding to that kernel, as well.  If you
+   are installing a new kernel with the same version number as your
+   working kernel, make a backup of your modules directory before you
+   do a "make modules_install".
+
+   Alternatively, before compiling, use the kernel config option
+   "LOCALVERSION" to append a unique suffix to the regular kernel version.
+   LOCALVERSION can be set in the "General Setup" menu.
+
+ - In order to boot your new kernel, you'll need to copy the kernel
+   image (e.g. .../linux/arch/i386/boot/bzImage after compilation)
+   to the place where your regular bootable kernel is found. 
+
+ - Booting a kernel directly from a floppy without the assistance of a
+   bootloader such as LILO, is no longer supported.
+
+   If you boot Linux from the hard drive, chances are you use LILO, which
+   uses the kernel image as specified in the file /etc/lilo.conf.  The
+   kernel image file is usually /vmlinuz, /boot/vmlinuz, /bzImage or
+   /boot/bzImage.  To use the new kernel, save a copy of the old image
+   and copy the new image over the old one.  Then, you MUST RERUN LILO
+   to update the loading map!! If you don't, you won't be able to boot
+   the new kernel image.
+
+   Reinstalling LILO is usually a matter of running /sbin/lilo. 
+   You may wish to edit /etc/lilo.conf to specify an entry for your
+   old kernel image (say, /vmlinux.old) in case the new one does not
+   work.  See the LILO docs for more information. 
+
+   After reinstalling LILO, you should be all set.  Shutdown the system,
+   reboot, and enjoy!
+
+   If you ever need to change the default root device, video mode,
+   ramdisk size, etc.  in the kernel image, use the 'rdev' program (or
+   alternatively the LILO boot options when appropriate).  No need to
+   recompile the kernel to change these parameters. 
+
+ - Reboot with the new kernel and enjoy. 
+
+IF SOMETHING GOES WRONG:
+
+ - If you have problems that seem to be due to kernel bugs, please check
+   the file MAINTAINERS to see if there is a particular person associated
+   with the part of the kernel that you are having trouble with. If there
+   isn't anyone listed there, then the second best thing is to mail
+   them to me (torvalds@linux-foundation.org), and possibly to any other
+   relevant mailing-list or to the newsgroup.
+
+ - In all bug-reports, *please* tell what kernel you are talking about,
+   how to duplicate the problem, and what your setup is (use your common
+   sense).  If the problem is new, tell me so, and if the problem is
+   old, please try to tell me when you first noticed it.
+
+ - If the bug results in a message like
+
+     unable to handle kernel paging request at address C0000010
+     Oops: 0002
+     EIP:   0010:XXXXXXXX
+     eax: xxxxxxxx   ebx: xxxxxxxx   ecx: xxxxxxxx   edx: xxxxxxxx
+     esi: xxxxxxxx   edi: xxxxxxxx   ebp: xxxxxxxx
+     ds: xxxx  es: xxxx  fs: xxxx  gs: xxxx
+     Pid: xx, process nr: xx
+     xx xx xx xx xx xx xx xx xx xx
+
+   or similar kernel debugging information on your screen or in your
+   system log, please duplicate it *exactly*.  The dump may look
+   incomprehensible to you, but it does contain information that may
+   help debugging the problem.  The text above the dump is also
+   important: it tells something about why the kernel dumped code (in
+   the above example, it's due to a bad kernel pointer). More information
+   on making sense of the dump is in Documentation/oops-tracing.txt
+
+ - If you compiled the kernel with CONFIG_KALLSYMS you can send the dump
+   as is, otherwise you will have to use the "ksymoops" program to make
+   sense of the dump (but compiling with CONFIG_KALLSYMS is usually preferred).
+   This utility can be downloaded from
+   ftp://ftp.<country>.kernel.org/pub/linux/utils/kernel/ksymoops/ .
+   Alternatively, you can do the dump lookup by hand:
+
+ - In debugging dumps like the above, it helps enormously if you can
+   look up what the EIP value means.  The hex value as such doesn't help
+   me or anybody else very much: it will depend on your particular
+   kernel setup.  What you should do is take the hex value from the EIP
+   line (ignore the "0010:"), and look it up in the kernel namelist to
+   see which kernel function contains the offending address.
+
+   To find out the kernel function name, you'll need to find the system
+   binary associated with the kernel that exhibited the symptom.  This is
+   the file 'linux/vmlinux'.  To extract the namelist and match it against
+   the EIP from the kernel crash, do:
+
+     nm vmlinux | sort | less
+
+   This will give you a list of kernel addresses sorted in ascending
+   order, from which it is simple to find the function that contains the
+   offending address.  Note that the address given by the kernel
+   debugging messages will not necessarily match exactly with the
+   function addresses (in fact, that is very unlikely), so you can't
+   just 'grep' the list: the list will, however, give you the starting
+   point of each kernel function, so by looking for the function that
+   has a starting address lower than the one you are searching for but
+   is followed by a function with a higher address you will find the one
+   you want.  In fact, it may be a good idea to include a bit of
+   "context" in your problem report, giving a few lines around the
+   interesting one. 
+
+   If you for some reason cannot do the above (you have a pre-compiled
+   kernel image or similar), telling me as much about your setup as
+   possible will help.  Please read the REPORTING-BUGS document for details.
+
+ - Alternatively, you can use gdb on a running kernel. (read-only; i.e. you
+   cannot change values or set break points.) To do this, first compile the
+   kernel with -g; edit arch/i386/Makefile appropriately, then do a "make
+   clean". You'll also need to enable CONFIG_PROC_FS (via "make config").
+
+   After you've rebooted with the new kernel, do "gdb vmlinux /proc/kcore".
+   You can now use all the usual gdb commands. The command to look up the
+   point where your system crashed is "l *0xXXXXXXXX". (Replace the XXXes
+   with the EIP value.)
+
+   gdb'ing a non-running kernel currently fails because gdb (wrongly)
+   disregards the starting offset for which the kernel is compiled.
+
